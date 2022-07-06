@@ -17,6 +17,7 @@ function Card(props) {
         return bgColor;
     };
 
+    
     return (
         <div className="ui cards">
             <div className="card" style={{backgroundColor: setBgColor()}}>
