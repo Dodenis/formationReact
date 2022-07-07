@@ -1,40 +1,5 @@
-import {useState} from 'react'
 
-const BooksList = () => {
-    // Pour gérer l'état du component dans une fonction il faut passer par 
-    // les hooks (useState)
-    const [books, setBooks] = useState([
-        {
-            id: 1,
-            title: 'One Piece Tome 1',
-            author: 'Eiichirō Oda',
-            year: 2010,
-            price: 15
-        },
-        {
-            id: 2,
-            title: 'Bleach Tome 5',
-            author: 'Tite Kubo',
-            year: 2015,
-            price: 12
-        },
-        {
-            id: 3,
-            title: 'Naruto Tome 16',
-            author: 'Masashi Kishimoto',
-            year: 2006,
-            price: 9
-        }
-    ]);
-
-    const deleteBook = (id) => {
-        if (window.confirm('Voulez vous supprimer ce livre ?')) {
-            setBooks(books.filter(
-                book => book.id !== id
-            ));
-        }
-      }
-
+const BooksList = (props) => {
     return (
         <>
         <button type="button" className="btn btn-success">Ajouter un livre</button>
@@ -52,7 +17,7 @@ const BooksList = () => {
         </thead>
         <tbody>
             {
-                books.map(
+                props.books.map(
                     book => {
                         return (
                             <tr key={book.id}>
@@ -62,7 +27,7 @@ const BooksList = () => {
                                 <td>{book.year}</td>
                                 <td>{book.price}</td>
                                 <td><button type="button" className="btn btn-primary">E</button></td>
-                                <td><button type="button" className="btn btn-danger" onClick={() => deleteBook(book.id)}>X</button></td>
+                                <td><button type="button" className="btn btn-danger" onClick={() => props.deleteBook(book.id)}>X</button></td>
                             </tr>
                         );
                     }
