@@ -1,0 +1,19 @@
+version: '3.5'
+
+services:
+  app:
+    build: docker
+    image: formation-react-node:lts-alpine
+    working_dir: /srv
+    volumes:
+      - .:/srv
+      # Entrypoint
+      - ./docker/entrypoint-node.sh:/usr/local/bin/entrypoint.sh:ro
+    entrypoint: entrypoint.sh
+    environment:
+      - NODE_OPTIONS='--max-old-space-size=2048'
+    expose:
+      - "3000"
+    ports:
+      - 3000:3000
+    command: "tail -f /dev/null"
