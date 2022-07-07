@@ -2,10 +2,17 @@ import {useState} from 'react'
 
 import BooksList from "./books/BooksList";
 import BooksAdd from "./books/BooksAdd";
+import BooksEdit from './books/BooksEdit';
 
 const App = () => {
-
-  // Pour gérer l'état du component dans une fonction il faut passer par 
+    const defaultEmpty = {
+        title: '',
+        author: '',
+        year: 2000,
+        price: 10
+    }
+    
+    // Pour gérer l'état du component dans une fonction il faut passer par 
     // les hooks (useState)
     const [books, setBooks] = useState([
       {
@@ -30,8 +37,14 @@ const App = () => {
           price: 9
       }
   ]);
+  const [bookAdd, setBookAdd] = useState(defaultEmpty);
+  const [bookEdit, setBookEdit] = useState({});
+  const [action, setAction] = useState('');
 
-  const deleteBook = (id) => {
+  /* ******************************
+   * Deletes book functions 
+   ****************************** */
+  const onBookDelete = (id) => {
       if (window.confirm('Voulez vous supprimer ce livre ?')) {
           setBooks(books.filter(
               book => book.id !== id
@@ -39,29 +52,66 @@ const App = () => {
       }
   }
 
-  const onBookAdd = (event, book) => {
+  /* ******************************
+   * Add book functions 
+   ****************************** */
+  const onBookAddShow = () => {
+      setAction('add');
+  }
+
+  const onBookAddSubmit = (event, book) => {
       event.preventDefault();
-      let booksCopy = [...books];
-      let nextId = 0;
-      booksCopy.forEach(book => {
-        if (book.id > nextId) {
-          nextId = book.id;
-        }
-      });
-      nextId++;
+      const newId = books[books.length - 1].id + 1;
+      
+      setBooks([...books, {...book, id: newId}]);
+      setBookAdd(defaultEmpty);
+      setAction('');
+  }
 
-      let bookCopy = {...book};
-      bookCopy['id'] = nextId;
+  const onBookAddCancel = (event) => {
+      event.preventDefault();
+      setBookAdd(defaultEmpty);
+      setAction('');
+  }
 
-      booksCopy.push(bookCopy);
-      setBooks(booksCopy);
+  /* ******************************
+   * Edit book functions 
+   ****************************** */
+  const onBookEditShow = (book) => {
+      console.log(book);
+      setBookEdit(book);
+      setAction('edit');
+  }
+
+  const onBookEditSubmit = (event, bookEdited) => {
+      event.preventDefault();
+      console.log(bookEdited);
+      setBookEdit({});
+
+      setBooks([...books].map(
+          (book) => {
+              if (book.id === bookEdited.id) {
+                  return bookEdited;
+              }
+
+              return book;
+          }
+      ));
+      
+      setAction('');
+  }
+
+  const onBookEditCancel = () => {
+     setBookEdit({});
+     setAction('');
   }
 
   return (
     <div className="container">
       <h1>Gestion des livres</h1>
-      <BooksList books = {books} deleteBook = {deleteBook} />
-      <BooksAdd onBookAdd = {onBookAdd} />
+      <BooksList books = {books} onBookDelete = {onBookDelete} onBookEditShow = {onBookEditShow} onBookAddShow = {onBookAddShow} />
+      {action === 'add' && (<BooksAdd book = {bookAdd} onBookAddSubmit = {onBookAddSubmit} onBookAddCancel = {onBookAddCancel} />)}
+      {action === 'edit' && (<BooksEdit book = {bookEdit} onBookEditSubmit = {onBookEditSubmit} onBookEditCancel = {onBookEditCancel} />)}
     </div>
   );
 }

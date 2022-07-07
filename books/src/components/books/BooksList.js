@@ -2,7 +2,7 @@
 const BooksList = (props) => {
     return (
         <>
-        <button type="button" className="btn btn-success">Ajouter un livre</button>
+        <button type="button" className="btn btn-success" onClick={() => props.onBookAddShow()}>Ajouter un livre</button>
         <table className="table table-striped">
         <thead>
             <tr>
@@ -26,8 +26,8 @@ const BooksList = (props) => {
                                 <td>{book.author}</td>
                                 <td>{book.year}</td>
                                 <td>{book.price}</td>
-                                <td><button type="button" className="btn btn-primary">E</button></td>
-                                <td><button type="button" className="btn btn-danger" onClick={() => props.deleteBook(book.id)}>X</button></td>
+                                <td><button type="button" className="btn btn-primary" onClick={() => props.onBookEditShow(book)}>E</button></td>
+                                <td><button type="button" className="btn btn-danger" onClick={() => props.onBookDelete(book.id)}>X</button></td>
                             </tr>
                         );
                     }

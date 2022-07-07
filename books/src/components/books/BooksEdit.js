@@ -1,15 +1,17 @@
 import { useState } from "react";
 
-const BooksAdd = (props) => {
+const BooksEdit = (props) => {
     const [book, setBook] = useState(props.book);
-    
+  
     const onFieldChanged = ({target}) => {
         setBook({...book, [target.name]: target.value});
     }
 
+    console.log(props)
+
     return (
-        <form className="row g-3" onSubmit={(event) => props.onBookAddSubmit(event, book)}>
-            <h2>Ajouter un livre</h2>
+        <form className="row g-3" onSubmit={(event) => props.onBookEditSubmit(event, book)}>
+            <h2>Editer un livre</h2>
             <div className="col-12">
                 <label htmlFor="book-title" className="form-label">Titre: </label>
                 <input type="text" className="form-control" id="book-title" name="title" value={book.title} onChange={(event) => onFieldChanged(event)} />
@@ -28,10 +30,10 @@ const BooksAdd = (props) => {
             </div>
             <div className="col-12">
                 <button className="btn btn-primary" type="submit">Valider</button>
-                <button className="btn btn-danger" type="button" onClick={(event) => props.onBookAddCancel(event)}>Annuler</button>
+                <button className="btn btn-danger" type="button" onClick={() => props.onBookEditCancel()} >Annuler</button>
             </div>
         </form>
     );
 }
 
-export default BooksAdd;
+export default BooksEdit;
