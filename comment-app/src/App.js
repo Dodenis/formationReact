@@ -16,7 +16,7 @@ class App extends React.Component {
         date: '2 days ago',
         rating: '5 Stars',
         text: 'This is my comment',
-        state: "waitting"
+        status: "waitting"
       },
       {
         id: 2,
@@ -24,7 +24,7 @@ class App extends React.Component {
         date: '3 days ago',
         rating: '1 Stars',
         text: 'This is my comment aaaa',
-        state: "waitting"
+        status: "waitting"
       },
       {
         id: 3,
@@ -32,23 +32,23 @@ class App extends React.Component {
         date: '4 days ago',
         rating: '2 Stars',
         text: 'This is my comment bbbbb',
-        state: "waitting"
+        status: "waitting"
       }
     ]
   }
 
-  changeCardState = (id, newState) => {
+  changeCardStatus = (id, newStatus) => {
     //on clone les states car imutable
-    let nextState = {...this.state};
+    let stateCopy = {...this.state};
 
     //on parcour les comments et on change le state
-    nextState.comments.forEach(comment => {
+    stateCopy.comments.forEach(comment => {
       if (comment.id === id) {
-        comment.state = newState;
+        comment.status = newStatus;
       }
     });
 
-    this.setState(nextState);
+    this.setState(stateCopy);
   }
 
   render() {
@@ -57,7 +57,12 @@ class App extends React.Component {
       {
         this.state.comments.map(
           comment => ( 
-            <Card key={comment.id} state={comment.state} handleStateChange={this.changeCardState}>
+            <Card 
+              key={comment.id} 
+              id={comment.id} 
+              status={comment.status} 
+              handleStatusChange={this.changeCardStatus}
+              >
               <Comment 
                 key={comment.id} 
                 avatar={comment.avatar}

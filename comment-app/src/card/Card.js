@@ -9,7 +9,7 @@ class Card extends React.Component {
 
     render() {
         let bgColor = '#fff';
-        switch (this.props.state) {
+        switch (this.props.status) {
             case 'approved':
                 bgColor = 'rgba(0,255,0,0.2)';
                 break;
@@ -28,8 +28,8 @@ class Card extends React.Component {
                         <div className="ui two buttons">
                             {/*<Button color='green' label='Approve' />
                             <Button color='red' label='Decline' />*/}
-                            <div className={"ui basic button green"} onClick={() => {this.props.handleStateChange(+this.props.children.key, 'approved')}}>Approve</div>
-                            <div className={"ui basic button red"} onClick={() => {this.props.handleStateChange(+this.props.children.key, 'decline')}}>Decline</div>
+                            <div className={"ui basic button green"} onClick={() => {this.props.handleStatusChange(+this.props.id, 'approved')}}>Approve</div>
+                            <div className={"ui basic button red"} onClick={() => {this.props.handleStatusChange(+this.props.id, 'decline')}}>Decline</div>
                         </div>
                     </div>
                 </div>
