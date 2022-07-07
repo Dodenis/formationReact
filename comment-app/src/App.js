@@ -55,13 +55,12 @@ class App extends React.Component {
     return (
       <div>
       {
-        this.state.comments.map(
-          comment => {
-            if (comment.status === 'decline') {
-              return '';
-            }
-            
-            return ( 
+        this.state.comments
+        .filter(
+          comment => comment.status !== 'decline'
+        )
+        .map(
+          comment => ( 
             <Card 
               key={comment.id} 
               id={comment.id} 
@@ -76,7 +75,7 @@ class App extends React.Component {
                 text={comment.text}
               />
             </Card>
-          )}
+          )
         )
       }
       </div>
