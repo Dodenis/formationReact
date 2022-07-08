@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import { useState, useEffect } from 'react'
 
 import BooksList from "./books/BooksList";
 import BooksAdd from "./books/BooksAdd";
@@ -11,90 +11,143 @@ import {
 } from "react-router-dom";
 
 const App = () => {
-    const defaultEmpty = {
-        title: '',
-        author: '',
-        year: 2000,
-        price: 10
-    }
-    
-    const navigate = useNavigate();
-
-    // Pour gérer l'état du component dans une fonction il faut passer par 
-    // les hooks (useState)
-    const [books, setBooks] = useState([
-      {
-          id: 1,
-          title: 'One Piece Tome 1',
-          author: 'Eiichirō Oda',
-          year: 2010,
-          price: 15
-      },
-      {
-          id: 2,
-          title: 'Bleach Tome 5',
-          author: 'Tite Kubo',
-          year: 2015,
-          price: 12
-      },
-      {
-          id: 3,
-          title: 'Naruto Tome 16',
-          author: 'Masashi Kishimoto',
-          year: 2006,
-          price: 9
+  const baseUrl = "http://localhost:3000/books";
+  const apiHandleErrors = (response) => {
+      if (!response.ok) {
+          throw Error(response.statusText);
       }
-  ]);
+
+      return response;
+  }
+  const apiLoadBooks = () => {
+    fetch(baseUrl)
+      .then(apiHandleErrors)
+      .then(response => response.json())
+      .then(response => {
+        setBooks([...response]);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  const apiAddBooks = (newBook) => {
+    fetch(baseUrl, {
+      "method": "POST",
+      "headers": {
+        "content-type": "application/json",
+        "accept": "application/json"
+      },
+      "body": JSON.stringify(newBook)
+    })
+      .then(apiHandleErrors)
+      .then(response => response.json())
+      .then(response => {
+        // On reset les inputs
+        setBookAdd(defaultEmpty);
+        // On recharge la liste
+        apiLoadBooks();
+        // On redirige
+        navigate('/books');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  const apiDeleteBooks = (id) => {
+    fetch(baseUrl + '/' + id, {
+      "method": "DELETE"
+    })
+      .then(apiHandleErrors)
+      .then(response => response.json())
+      .then(response => {
+        apiLoadBooks();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  const apiUpdateBooks = (editedBook) => {
+    fetch(baseUrl + '/' + editedBook.id, {
+      "method": "PUT",
+      "headers": {
+        "content-type": "application/json",
+        "accept": "application/json"
+      },
+      "body": JSON.stringify(editedBook)
+    })
+      .then(apiHandleErrors)
+      .then(response => response.json())
+      .then(response => {
+        apiLoadBooks();
+        // On redirige
+        navigate('/books');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  const defaultEmpty = {
+    title: '',
+    author: '',
+    year: 2000,
+    price: 10
+  }
+
+  const navigate = useNavigate();
+
+  // Pour gérer l'état du component dans une fonction il faut passer par 
+  // les hooks (useState)
+  const [books, setBooks] = useState([]);
+
+  // Lancement d'un traitement en fonction d'un changement d'état/montage
+  // Ici on charge les données au montage du component
+  useEffect(
+    () => {
+      apiLoadBooks();
+    },
+    []
+  );
+
   const [bookAdd, setBookAdd] = useState(defaultEmpty);
   const [bookEdit, setBookEdit] = useState({});
-  const [action, setAction] = useState('');
 
   /* ******************************
    * Deletes book functions 
    ****************************** */
   const onBookDelete = (id) => {
-      if (window.confirm('Voulez vous supprimer ce livre ?')) {
-          setBooks(books.filter(
-              book => book.id !== id
-          ));
-      }
+    if (window.confirm('Voulez vous supprimer ce livre ?')) {
+      apiDeleteBooks(id);
+    }
   }
 
   /* ******************************
    * Add book functions 
    ****************************** */
   const onBookAddSubmit = (event, book) => {
-      event.preventDefault();
-      const newId = books[books.length - 1].id + 1;
-      
-      setBooks([...books, {...book, id: newId}]);
-      setBookAdd(defaultEmpty);
-      navigate('/books');
+    event.preventDefault();
+    // On enregistre sur le serveur
+    apiAddBooks(book);
   }
 
   const onBookAddCancel = (event) => {
-      event.preventDefault();
-      setBookAdd(defaultEmpty);
-      navigate('/books');
+    event.preventDefault();
+    // On reset les inputs
+    setBookAdd(defaultEmpty);
+    // On redirige
+    navigate('/books');
   }
 
   /* ******************************
    * Edit book functions 
    ****************************** */
   const onBookEditSubmit = (event, bookEdited) => {
-      event.preventDefault();
-      setBookEdit({});
-
-      setBooks([...books].map(
-          (book) => {
-              if (book.id === bookEdited.id) {
-                  return bookEdited;
-              }
-
-              return book;
-          }
-      ));
-      navigate('/books');
+    event.preventDefault();
+    // On enregistre sur le serveur
+    apiUpdateBooks(bookEdited);
   }
 
   const getBookEditById = (id) => {
@@ -108,16 +161,16 @@ const App = () => {
       <h1>Gestion des livres</h1>
 
       <Routes>
-          <Route path="/books" exact element={<BooksList 
-              books = {books}
-              onBookDelete = {onBookDelete}/>} />
-          <Route path="/books/add" element={<BooksAdd 
-              book = {bookAdd}
-              onBookAddSubmit = {onBookAddSubmit}
-              onBookAddCancel = {onBookAddCancel} />} />
-          <Route path="/books/edit/:id" element={<BooksEdit 
-               getBookEditById={getBookEditById} 
-               onBookEditSubmit={onBookEditSubmit}/>} />
+        <Route path="/books" exact element={<BooksList
+          books={books}
+          onBookDelete={onBookDelete} />} />
+        <Route path="/books/add" element={<BooksAdd
+          book={bookAdd}
+          onBookAddSubmit={onBookAddSubmit}
+          onBookAddCancel={onBookAddCancel} />} />
+        <Route path="/books/edit/:id" element={<BooksEdit
+          getBookEditById={getBookEditById}
+          onBookEditSubmit={onBookEditSubmit} />} />
       </Routes>
     </div>
   );

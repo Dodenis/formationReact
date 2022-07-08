@@ -29,8 +29,8 @@ const BooksEdit = (props) => {
                 <input type="number" className="form-control" id="book-price" name="price" value={book.price} onChange={(event) => onFieldChanged(event)} />
             </div>
             <div className="col-12">
-                <button className="btn btn-primary" type="submit">Valider</button>
-                <Link to="/books" className="btn btn-danger" >Annuler</Link>
+                <button className="btn btn-success" type="submit"><i className="bi-check"></i> Valider</button>
+                <Link to="/books" className="btn btn-danger" ><i className="bi-x"></i> Annuler</Link>
             </div>
         </form>
     );

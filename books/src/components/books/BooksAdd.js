@@ -27,8 +27,8 @@ const BooksAdd = (props) => {
                 <input type="number" className="form-control" id="book-price" name="price" value={book.price} onChange={(event) => onFieldChanged(event)} />
             </div>
             <div className="col-12">
-                <button className="btn btn-primary" type="submit">Valider</button>
-                <button className="btn btn-danger" type="button" onClick={(event) => props.onBookAddCancel(event)}>Annuler</button>
+                <button className="btn btn-success" type="submit"><i className="bi-check"></i> Valider</button>
+                <button className="btn btn-danger" type="button" onClick={(event) => props.onBookAddCancel(event)}><i className="bi-x"></i> Annuler</button>
             </div>
         </form>
     );

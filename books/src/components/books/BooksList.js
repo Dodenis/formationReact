@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const BooksList = (props) => {
     return (
         <>
-        <Link to="/books/add" type="button" className="btn btn-success">Ajouter un livre</Link>
+        <Link to="/books/add" type="button" className="btn btn-success"><i className="bi-book"></i> Ajouter un livre</Link>
         <table className="table table-striped">
         <thead>
             <tr>
@@ -27,8 +27,8 @@ const BooksList = (props) => {
                                 <td>{book.author}</td>
                                 <td>{book.year}</td>
                                 <td>{book.price}</td>
-                                <td><Link to={"/books/edit/" + book.id} className="btn btn-primary">E</Link></td>
-                                <td><button type="button" className="btn btn-danger" onClick={() => props.onBookDelete(book.id)}>X</button></td>
+                                <td><Link to={"/books/edit/" + book.id} className="btn btn-primary"><i className="bi-pencil"></i></Link></td>
+                                <td><button type="button" className="btn btn-danger" onClick={() => props.onBookDelete(book.id)}><i className="bi-trash"></i></button></td>
                             </tr>
                         );
                     }
