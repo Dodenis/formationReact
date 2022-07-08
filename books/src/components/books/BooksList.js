@@ -12,8 +12,7 @@ const BooksList = (props) => {
             <th scope="col">Auteur</th>
             <th scope="col">Année</th>
             <th scope="col">Prix</th>
-            <th scope="col">Editer</th>
-            <th scope="col">Supprimer</th>
+            <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -27,8 +26,12 @@ const BooksList = (props) => {
                                 <td>{book.author}</td>
                                 <td>{book.year}</td>
                                 <td>{book.price}</td>
-                                <td><Link to={"/books/edit/" + book.id} className="btn btn-primary"><i className="bi-pencil"></i></Link></td>
-                                <td><button type="button" className="btn btn-danger" onClick={() => props.onBookDelete(book.id)}><i className="bi-trash"></i></button></td>
+                                <td>
+                                    <div className="btn-group" role="group" aria-label="Basic example">
+                                        <Link to={"/books/edit/" + book.id} className="btn btn-primary"><i className="bi-pencil"></i></Link>
+                                        <button type="button" className="btn btn-danger" onClick={() => props.onBookDelete(book.id)}><i className="bi-trash"></i></button>
+                                    </div>
+                                </td>
                             </tr>
                         );
                     }
