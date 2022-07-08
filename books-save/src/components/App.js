@@ -4,12 +4,6 @@ import BooksList from "./books/BooksList";
 import BooksAdd from "./books/BooksAdd";
 import BooksEdit from './books/BooksEdit';
 
-import {
-  Routes,
-  Route,
-  useNavigate
-} from "react-router-dom";
-
 const App = () => {
     const defaultEmpty = {
         title: '',
@@ -18,8 +12,6 @@ const App = () => {
         price: 10
     }
     
-    const navigate = useNavigate();
-
     // Pour gérer l'état du component dans une fonction il faut passer par 
     // les hooks (useState)
     const [books, setBooks] = useState([
@@ -63,24 +55,33 @@ const App = () => {
   /* ******************************
    * Add book functions 
    ****************************** */
+  const onBookAddShow = () => {
+      setAction('add');
+  }
+
   const onBookAddSubmit = (event, book) => {
       event.preventDefault();
       const newId = books[books.length - 1].id + 1;
       
       setBooks([...books, {...book, id: newId}]);
       setBookAdd(defaultEmpty);
-      navigate('/books');
+      setAction('');
   }
 
   const onBookAddCancel = (event) => {
       event.preventDefault();
       setBookAdd(defaultEmpty);
-      navigate('/books');
+      setAction('');
   }
 
   /* ******************************
    * Edit book functions 
    ****************************** */
+  const onBookEditShow = (book) => {
+      setBookEdit(book);
+      setAction('edit');
+  }
+
   const onBookEditSubmit = (event, bookEdited) => {
       event.preventDefault();
       setBookEdit({});
@@ -94,31 +95,44 @@ const App = () => {
               return book;
           }
       ));
-      navigate('/books');
+      
+      setAction('');
   }
 
-  const getBookEditById = (id) => {
-    return books.find(
-      book => book.id === id
-    )
+  const onBookEditCancel = () => {
+     setBookEdit({});
+     setAction('');
   }
 
   return (
     <div className="container">
       <h1>Gestion des livres</h1>
-
-      <Routes>
-          <Route path="/books" exact element={<BooksList 
-              books = {books}
-              onBookDelete = {onBookDelete}/>} />
-          <Route path="/books/add" element={<BooksAdd 
-              book = {bookAdd}
-              onBookAddSubmit = {onBookAddSubmit}
-              onBookAddCancel = {onBookAddCancel} />} />
-          <Route path="/books/edit/:id" element={<BooksEdit 
-               getBookEditById={getBookEditById} 
-               onBookEditSubmit={onBookEditSubmit}/>} />
-      </Routes>
+      <BooksList 
+          books = {books}
+          onBookDelete = {onBookDelete} 
+          onBookEditShow = {onBookEditShow} 
+          onBookAddShow = {onBookAddShow} 
+      />
+      {
+          action === 'add' 
+          && (
+              <BooksAdd 
+                  book = {bookAdd} 
+                  onBookAddSubmit = {onBookAddSubmit} 
+                  onBookAddCancel = {onBookAddCancel} 
+              />
+          )
+      }
+      {
+          action === 'edit' 
+          && (
+              <BooksEdit 
+                  book = {bookEdit} 
+                  onBookEditSubmit = {onBookEditSubmit} 
+                  onBookEditCancel = {onBookEditCancel} 
+              />
+          )
+      }
     </div>
   );
 }

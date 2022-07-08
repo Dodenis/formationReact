@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
 
 const BooksEdit = (props) => {
-    const {id} = useParams();
-    const [book, setBook] = useState(props.getBookEditById(+id));
+    const [book, setBook] = useState(props.book);
 
     const onFieldChanged = ({target}) => {
         setBook({...book, [target.name]: target.value});
@@ -30,7 +28,7 @@ const BooksEdit = (props) => {
             </div>
             <div className="col-12">
                 <button className="btn btn-primary" type="submit">Valider</button>
-                <Link to="/books" className="btn btn-danger" >Annuler</Link>
+                <button className="btn btn-danger" type="button" onClick={() => props.onBookEditCancel()} >Annuler</button>
             </div>
         </form>
     );
